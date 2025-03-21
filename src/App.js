@@ -35,21 +35,28 @@ const App = () => {
         }
     }, []);
 
-    const editPolicy = useCallback(async (id, updatedPolicy) => {
-        if (!updatedPolicy || Object.keys(updatedPolicy).length === 0) {
-            console.error("Error: updatedPolicy is empty or undefined");
+   const editPolicy = useCallback(async (id, updatedPolicy) => {
+
+    try {
+        const response = await axios.put(`${API_URL}/${id}`, updatedPolicy);
+        console.log(response.data);
+        
+        if (!response.data) {
+            console.error("Error: No updated policy returned from server");
             return;
         }
 
-        try {
-            const response = await axios.put(`${API_URL}/${id}`, updatedPolicy);
-            setPolicies(prevPolicies => prevPolicies.map(p => (p.id === id ? response.data : p)));
-            setFilteredPolicies(prevPolicies => prevPolicies.map(p => (p.id === id ? response.data : p)));
-            alert('Policy updated successfully');
-        } catch (error) {
-            console.error("Error updating policy:", error.response?.data || error.message);
-        }
-    }, []);
+        setPolicies(prevPolicies => 
+            prevPolicies.map(policy => policy.id === id ? { ...policy, ...response.data } : policy)
+        );
+
+
+        alert('Policy updated successfully');
+    } catch (error) {
+        console.error("Error updating policy:", error.response?.data || error.message);
+    }
+}, []);
+
 
     const deletePolicy = useCallback(async (id) => {
         try {
@@ -63,18 +70,20 @@ const App = () => {
     }, []);
 
     const handleSearch = useCallback((searchTerm) => {
-        if (!searchTerm) {
-            setFilteredPolicies(policies);
+        if (!searchTerm.trim()) {
+            setFilteredPolicies(policies); 
             return;
         }
-
-        const filtered = policies.filter(policy =>
-            (policy.policyName && policy.policyName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (policy.policyHolder && policy.policyHolder.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
-
+    
+        const filtered = policies.filter(policy => {
+            const nameMatch = policy.policyname?.toLowerCase().includes(searchTerm.toLowerCase());
+            const holderMatch = policy.policyholder?.toLowerCase().includes(searchTerm.toLowerCase());
+            return nameMatch || holderMatch;
+        });
+    
         setFilteredPolicies(filtered);
     }, [policies]);
+    
 
     return (
         <div className="app-container">

@@ -6,7 +6,7 @@ const PolicyList = ({ policies, editPolicy, deletePolicy }) => {
 
     const handleEditClick = (policy) => {
         setEditing(policy.id);
-        setUpdatedPolicy(policy);
+        setUpdatedPolicy({...policy});
     };
 
     const handleChange = (e) => {
