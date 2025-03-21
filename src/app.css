@@ -6,7 +6,7 @@
     min-height: 100vh;
     text-align: center;
     background-color: #f4f4f4;
-    padding: 20px;
+    padding: 10px;
 }
 
 h1 {
@@ -14,7 +14,7 @@ h1 {
 }
 
 table {
-    width: 80%;
+    width: 100%;
     margin-top: 20px;
     border-collapse: collapse;
     background: white;
@@ -29,4 +29,5 @@ button {
     margin: 5px;
     padding: 8px 12px;
     cursor: pointer;
+    color: red;
 }

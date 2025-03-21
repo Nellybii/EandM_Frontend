@@ -31,18 +31,23 @@ const App = () => {
             setFilteredPolicies(prevPolicies => [...prevPolicies, response.data]);
             alert('Policy added successfully');
         } catch (error) {
-            console.error("Error adding policy:", error);
+            console.error("Error adding policy:", error.response?.data || error.message);
         }
     }, []);
 
     const editPolicy = useCallback(async (id, updatedPolicy) => {
+        if (!updatedPolicy || Object.keys(updatedPolicy).length === 0) {
+            console.error("Error: updatedPolicy is empty or undefined");
+            return;
+        }
+
         try {
             const response = await axios.put(`${API_URL}/${id}`, updatedPolicy);
-            setPolicies(prevPolicies => prevPolicies.map(p => p.id === id ? response.data : p));
-            setFilteredPolicies(prevPolicies => prevPolicies.map(p => p.id === id ? response.data : p));
+            setPolicies(prevPolicies => prevPolicies.map(p => (p.id === id ? response.data : p)));
+            setFilteredPolicies(prevPolicies => prevPolicies.map(p => (p.id === id ? response.data : p)));
             alert('Policy updated successfully');
         } catch (error) {
-            console.error("Error updating policy:", error);
+            console.error("Error updating policy:", error.response?.data || error.message);
         }
     }, []);
 
@@ -53,7 +58,7 @@ const App = () => {
             setFilteredPolicies(prevPolicies => prevPolicies.filter(p => p.id !== id));
             alert('Policy deleted successfully');
         } catch (error) {
-            console.error("Error deleting policy:", error);
+            console.error("Error deleting policy:", error.response?.data || error.message);
         }
     }, []);
 

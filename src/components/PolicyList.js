@@ -13,7 +13,12 @@ const PolicyList = ({ policies, editPolicy, deletePolicy }) => {
         setUpdatedPolicy({ ...updatedPolicy, [e.target.name]: e.target.value });
     };
 
-    const handleUpdate = (id) => {
+    const handleUpdate = (id, updatedPolicy) => {
+        if (!updatedPolicy || Object.keys(updatedPolicy).length === 0) {
+            console.error("Error: updatedPolicy is undefined or empty");
+            return;
+        }
+    
         editPolicy(id, updatedPolicy);
         setEditing(null);
     };
@@ -36,20 +41,20 @@ const PolicyList = ({ policies, editPolicy, deletePolicy }) => {
                         <tr key={policy.id}>
                             {editing === policy.id ? (
                                 <>
-                                    <td><input type="text" name="policyname" value={updatedPolicy.policyname} onChange={handleChange} /></td>
-                                    <td><input type="text" name="policyholder" value={updatedPolicy.policyholder} onChange={handleChange} /></td>
-                                    <td><input type="number" name="coverageamount" value={updatedPolicy.coverageamount} onChange={handleChange} /></td>
-                                    <td><input type="number" name="premium" value={updatedPolicy.premium} onChange={handleChange} /></td>
+                                    <td><input type="text" name="policyName" value={updatedPolicy.policyName || ''} onChange={handleChange} /></td>
+                                    <td><input type="text" name="policyHolder" value={updatedPolicy.policyHolder || ''} onChange={handleChange} /></td>
+                                    <td><input type="number" name="coverageAmount" value={updatedPolicy.coverageAmount || ''} onChange={handleChange} /></td>
+                                    <td><input type="number" name="premium" value={updatedPolicy.premium || ''} onChange={handleChange} /></td>
                                     <td>
-                                        <button onClick={() => handleUpdate(policy.id)}>Save</button>
+                                        <button onClick={() => handleUpdate(policy.id, updatedPolicy)}>Save</button>
                                         <button onClick={() => setEditing(null)}>Cancel</button>
                                     </td>
                                 </>
                             ) : (
                                 <>
-                                    <td>{policy.policyname}</td>
-                                    <td>{policy.policyholder}</td>
-                                    <td>${policy.coverageamount}</td>
+                                    <td>{policy.policyName}</td>
+                                    <td>{policy.policyHolder}</td>
+                                    <td>${policy.coverageAmount}</td>
                                     <td>${policy.premium}</td>
                                     <td>
                                         <button onClick={() => handleEditClick(policy)}>Edit</button>
